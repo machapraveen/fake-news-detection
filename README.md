@@ -1,165 +1,195 @@
-🤖 Fake News Detection
+# Fake News Detection
 
-<div align="center">
+A machine learning classifier that distinguishes between fake and real news articles using Natural Language Processing techniques. Built with TF-IDF vectorization and Linear Support Vector Classification, achieving 94.5% accuracy on news article classification.
 
-![AI/ML](https://img.shields.io/badge/AI%2FML-Medium-blue?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+## Author
+**Macha Praveen**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Stars](https://img.shields.io/github/stars/machapraveen/fake-news-detection?style=for-the-badge)](https://github.com/machapraveen/fake-news-detection/stargazers)
-[![Issues](https://img.shields.io/github/issues/machapraveen/fake-news-detection?style=for-the-badge)](https://github.com/machapraveen/fake-news-detection/issues)
+## Overview
 
-</div>
+This project implements a binary text classification system designed to identify fake news articles. Using a dataset of 6,335 labeled news articles, the model employs TF-IDF (Term Frequency-Inverse Document Frequency) vectorization to convert text into numerical features, then applies Linear Support Vector Classification for prediction.
 
-## 🎯 Overview
+## Features
 
-Machine learning classifier for detecting fake news using TF-IDF and Linear SVC
+- **High Accuracy**: Achieves 94.5% accuracy on test data
+- **TF-IDF Vectorization**: Converts text to numerical features based on word importance
+- **Linear SVC Classification**: Uses one of the best algorithms for text classification
+- **Efficient Processing**: Handles large datasets with optimized preprocessing
+- **Binary Classification**: Distinguishes between REAL (0) and FAKE (1) news articles
 
-This medium AI/ML project demonstrates advanced techniques and modern development practices, featuring cutting-edge implementations and professional-grade architecture.
+## Dataset Structure
 
-## ✨ Key Features
+The model works with news articles containing:
+- **ID**: Unique identifier for each article
+- **Title**: News article headline
+- **Text**: Full article content
+- **Label**: Binary classification (REAL/FAKE)
 
-- 🔥 **Text preprocessing**
-- 🔥 **TF-IDF vectorization**
-- 🔥 **Linear SVC classification**
-- 🔥 **94.5% accuracy**
-- 🔥 **News article analysis**
-
-## 🛠️ Technology Stack
-
-- **Python**
-- **Scikit-learn**
-- **Pandas**
-- **TF-IDF**
-
-## 🚀 Quick Start
-
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/machapraveen/fake-news-detection.git
-cd fake-news-detection
+Sample data format:
+```
+         id                                              title  
+0      8476                       You Can Smell Hillary's Fear   
+1     10294  Watch The Exact Moment Paul Ryan Committed Pol...   
+2      3608        Kerry to go to Paris in gesture of sympathy   
+3     10142  Bernie supporters on Twitter erupt in anger ag...   
 ```
 
-### 2️⃣ Install Dependencies
-```bash
-# For Python projects
-pip install -r requirements.txt
+## Implementation Details
 
-# For React projects (if applicable)
-npm install
-
-# For Docker projects (if applicable)
-docker-compose up
-```
-
-### 3️⃣ Run the Application
-```bash
-# Python applications
-python main.py  # or app.py
-
-# Jupyter notebooks
-jupyter notebook
-
-# Django projects
-python manage.py runserver
-
-# React applications
-npm start
-```
-
-## 📖 Usage
-
-This project offers comprehensive functionality for machine learning classifier for detecting fake news using tf-idf and linear svc. Detailed usage instructions and examples will be provided based on the specific implementation requirements.
-
-### Basic Usage Example
+### Data Preprocessing
 ```python
-# Example code snippet will be added based on the project structure
-# This demonstrates how to use the main functionality
+# Convert categorical labels to binary format
+data['fake'] = data['label'].apply(lambda x: 0 if x == "REAL" else 1)
+data = data.drop("label", axis=1)
+
+# Split features and target
+X, y = data["text"], data["fake"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 ```
 
-## 🏗️ Project Structure
-
-```
-fake-news-detection/
-├── README.md
-├── requirements.txt (if Python)
-├── src/                    # Source code
-├── tests/                  # Unit tests
-├── docs/                   # Documentation
-└── examples/               # Usage examples
+### TF-IDF Vectorization
+```python
+# TF-IDF: Term Frequency - Inverse Document Frequency
+vectorizer = TfidfVectorizer(stop_words='english', max_df=0.7)
+X_train_vectorized = vectorizer.fit_transform(X_train) 
+X_test_vectorized = vectorizer.transform(X_test)
 ```
 
-## 🧪 Testing
+### Model Training and Evaluation
+```python
+# Linear SVC - considered one of the best text classification algorithms
+clf = LinearSVC()
+clf.fit(X_train_vectorized, y_train)
 
-Run the test suite to ensure everything works correctly:
+# Evaluate model performance
+accuracy = clf.score(X_test_vectorized, y_test)
+print(f"Accuracy: {accuracy:.4f}")  # Output: 0.9455 (94.55%)
+```
 
+### Prediction Example
+```python
+# Test on individual article
+article_text = X_test.iloc[10]
+vectorized_text = vectorizer.transform([article_text])
+prediction = clf.predict(vectorized_text)  # Returns: array([1]) for FAKE
+```
+
+## TF-IDF Explained
+
+**TF-IDF (Term Frequency-Inverse Document Frequency)** is a numerical statistic that reflects how important a word is to a document in a collection of documents.
+
+### Components:
+- **TF (Term Frequency)**: Number of times a term appears in a document
+- **IDF (Inverse Document Frequency)**: Logarithm of total documents divided by documents containing the term
+- **TF-IDF Score**: TF × IDF
+
+### Purpose:
+TF-IDF helps identify the most relevant and distinctive words per document by:
+- Increasing weight for words that appear frequently in a document (TF)
+- Decreasing weight for words that appear frequently across all documents (IDF)
+- Filtering common words that don't provide discriminative information
+
+## Installation
+
+### Prerequisites
+- Python 3.7+
+- Jupyter Notebook (optional, for running the .ipynb file)
+
+### Dependencies
 ```bash
-# Python projects
-python -m pytest tests/
-
-# Node.js projects
-npm test
-
-# Django projects
-python manage.py test
+pip install numpy pandas scikit-learn
 ```
 
-## 📊 Performance
+For Jupyter notebook:
+```bash
+pip install jupyter
+```
 
-This project has been optimized for performance with:
-- Efficient algorithms and data structures
-- Memory optimization techniques
-- Scalable architecture design
-- Comprehensive error handling
+## Usage
 
-## 🔮 Roadmap
+### Running the Notebook
+```bash
+jupyter notebook "Fake News Detection.ipynb"
+```
 
-- [ ] Enhanced performance optimizations
-- [ ] Additional feature implementations
-- [ ] Mobile/responsive design improvements
-- [ ] Advanced analytics and monitoring
-- [ ] API documentation and examples
-- [ ] Integration with cloud services
+### Using the Model in Python
+```python
+import pandas as pd
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.model_selection import train_test_split
 
-## 🤝 Contributing
+# Load your dataset
+data = pd.read_csv("fake_or_real_news.csv")
 
-Contributions are always welcome! Here's how you can help:
+# Preprocess data
+data['fake'] = data['label'].apply(lambda x: 0 if x == "REAL" else 1)
+X, y = data["text"], data["fake"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-1. **Fork the Project**
-2. **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit your Changes** (`git commit -m 'Add some AmazingFeature'`)
-4. **Push to the Branch** (`git push origin feature/AmazingFeature`)
-5. **Open a Pull Request**
+# Vectorize text
+vectorizer = TfidfVectorizer(stop_words='english', max_df=0.7)
+X_train_vectorized = vectorizer.fit_transform(X_train)
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+# Train model
+clf = LinearSVC()
+clf.fit(X_train_vectorized, y_train)
 
-## 📜 License
+# Make predictions
+def predict_news(article_text):
+    vectorized = vectorizer.transform([article_text])
+    prediction = clf.predict(vectorized)[0]
+    return "FAKE" if prediction == 1 else "REAL"
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Model Performance
 
-## 🌟 Acknowledgments
+- **Algorithm**: Linear Support Vector Classification (LinearSVC)
+- **Feature Engineering**: TF-IDF Vectorization
+- **Training Set**: 80% of 6,335 articles
+- **Test Set**: 20% of 6,335 articles
+- **Accuracy**: 94.55%
+- **Preprocessing**: English stop words removal, max document frequency of 0.7
 
-- Thanks to the open-source community for inspiration and resources
-- Built with passion for advancing technology and innovation
-- Special thanks to all contributors and supporters
+## Key Features of Implementation
 
-## 📞 Contact & Support
+### Text Preprocessing
+- Removes English stop words to focus on meaningful terms
+- Applies maximum document frequency threshold (0.7) to filter overly common words
+- Converts text to numerical vectors suitable for machine learning
 
-**Praveen Kumar Macha**
-- 🐙 GitHub: [@machapraveen](https://github.com/machapraveen)
-- 📧 Email: machapraveen@example.com
-- 🔗 Project Link: [https://github.com/machapraveen/fake-news-detection](https://github.com/machapraveen/fake-news-detection)
+### Classification Algorithm
+Linear SVC is particularly effective for text classification because:
+- Handles high-dimensional sparse data efficiently
+- Works well with TF-IDF features
+- Provides good generalization for text classification tasks
+- Computationally efficient for large datasets
 
-For support, email machapraveen@example.com or open an issue on GitHub.
+## Project Structure
 
----
+```
+Fake News Detection/
+├── README.md
+├── Fake News Detection.ipynb    # Main Jupyter notebook
+└── fake_or_real_news.csv       # Dataset (not included)
+```
 
-<div align="center">
+## Future Enhancements
 
-**⭐ If you found this project helpful, please give it a star! ⭐**
+- **Deep Learning Models**: Implement LSTM or BERT-based models for improved accuracy
+- **Feature Engineering**: Add metadata features (publication date, author, source)
+- **Real-time Classification**: Create web interface for live news article classification
+- **Multi-class Classification**: Extend to classify different types of misinformation
+- **Explainability**: Add model interpretation to understand decision factors
 
-Made with ❤️ by [Praveen Kumar Macha](https://github.com/machapraveen)
+## Technical Notes
 
-</div>
+- The model uses binary classification (0 for REAL, 1 for FAKE)
+- TF-IDF parameters can be tuned for different datasets
+- LinearSVC provides fast training and prediction times
+- The implementation handles large text datasets efficiently
+
+## License
+
+This project is open-source and available under the MIT License.
